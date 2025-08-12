@@ -1,6 +1,9 @@
 
 # Overview 
-tradetrust verifiable credential backend for zenithblox"s Universal Adapter and BPMN Modeler
+tradetrust verifiable credential backend for zenithblox"s Universal Adapter and BPMN Modeler to create and issue verifiable credentials for the following documents:
+- Bill of Lading
+- Invoice
+- Certificate of Origin
 
 ## Prerequisites
 - Node.js (v14 or later)
