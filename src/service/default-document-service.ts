@@ -89,7 +89,8 @@ export class DefaultDocumentService implements DocumentService {
         const params =  this.getTransferabilityAction(action, transferabilityData)
         let title_escrow_tx = null
         if(action === TransferabilityActions.ACCEPT_ETR_RETURN || action === TransferabilityActions.REJECT_ETR_RETURN){
-            title_escrow_tx = token_registry_abi.encodeFunctionData(action, [...params])
+            const encryptedRemark = "0x" + encrypt(transferabilityData.remarks || action as string, transferabilityData.documentId!);
+            title_escrow_tx = token_registry_abi.encodeFunctionData(action, [transferabilityData.tokenId!, encryptedRemark])
         }else{
             title_escrow_tx =  title_escrow_factory.encodeFunctionData(action, [...params]);
         }
@@ -237,8 +238,6 @@ export class DefaultDocumentService implements DocumentService {
             case TransferabilityActions.REJECT_TRANSFER_HOLDER :
             case TransferabilityActions.REJECT_TRANSFER_BENEFICIARY :
             case TransferabilityActions.REJECT_TRANSFER_OWNERS :
-            case TransferabilityActions.ACCEPT_ETR_RETURN:
-            case TransferabilityActions.REJECT_ETR_RETURN:
             case TransferabilityActions.RETURN_TO_ISSUER :
                 params = [encryptedRemark];
                 break
