@@ -83,20 +83,23 @@ export class DefaultDocumentService implements DocumentService {
             rpcUrl:getRPCUrl(transferabilityData.chainId!) || ""
         })
         const title_escrow_factory = new ethers.Interface(v5Contracts.TitleEscrow__factory.abi);
-        const token_registry_abi = new Interface(TradeTrustToken__factory.abi);
+        const token_registry_abi = new ethers.Interface(TradeTrustToken__factory.abi);
         const provider = this.getProvider()
         const tile_escrow_address = await getTitleEscrowAddress(transferabilityData.tokenRegistry!, "0x" + transferabilityData.tokenId, provider)
         const params =  this.getTransferabilityAction(action, transferabilityData)
-        let title_escrow_tx = null
         if(action === TransferabilityActions.ACCEPT_ETR_RETURN || action === TransferabilityActions.REJECT_ETR_RETURN){
             const encryptedRemark = "0x" + encrypt(transferabilityData.remarks || action as string, transferabilityData.documentId!);
-            title_escrow_tx = token_registry_abi.encodeFunctionData(action, ["0x" + transferabilityData.tokenId!, encryptedRemark])
+            const token_registry_tx = token_registry_abi.encodeFunctionData(action, ["0x" + transferabilityData.tokenId!, encryptedRemark])
+            return {
+                to: transferabilityData.tokenRegistry,
+                data: token_registry_tx,
+            }
         }else{
-            title_escrow_tx =  title_escrow_factory.encodeFunctionData(action, [...params]);
-        }
-        return {
-            to: tile_escrow_address,
-            data: title_escrow_tx,
+            const title_escrow_tx =  title_escrow_factory.encodeFunctionData(action, [...params]);
+            return {
+                to: tile_escrow_address,
+                data: title_escrow_tx,
+            }
         }
     }
 
