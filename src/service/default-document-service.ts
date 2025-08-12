@@ -90,7 +90,7 @@ export class DefaultDocumentService implements DocumentService {
         let title_escrow_tx = null
         if(action === TransferabilityActions.ACCEPT_ETR_RETURN || action === TransferabilityActions.REJECT_ETR_RETURN){
             const encryptedRemark = "0x" + encrypt(transferabilityData.remarks || action as string, transferabilityData.documentId!);
-            title_escrow_tx = token_registry_abi.encodeFunctionData(action, ["0x" + transferabilityData.documentId!, encryptedRemark])
+            title_escrow_tx = token_registry_abi.encodeFunctionData(action, ["0x" + transferabilityData.tokenId!, encryptedRemark])
         }else{
             title_escrow_tx =  title_escrow_factory.encodeFunctionData(action, [...params]);
         }
